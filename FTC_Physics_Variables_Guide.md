@@ -347,3 +347,92 @@ y += (v_left + v_right) / 2 × sin(θ) × dt
    - Makes alignment consistent and easy
 
 **Quote:** "you just get field position from ll and convert it to pedro type cords and then offset from center" - dot (FTC Team TSFD)
+
+---
+
+## VARIABLES TO MEASURE/TUNE - QUICK REFERENCE
+
+### Hardware Measurements (Measure with Tools)
+
+| Variable | Symbol | Typical Value | How to Measure |
+|----------|--------|---------------|----------------|
+| Flywheel radius | r | 0.04-0.08m | Calipers on wheel |
+| Flywheel mass | m | 0.1-0.5kg | Kitchen scale |
+| Intake roller radius | r_roller | 0.02-0.05m | Calipers |
+| Wheel diameter | d_wheel | 0.08-0.15m | Tape measure |
+| Robot launcher height | h_robot | 0.2-0.3m | Ruler from ground |
+| Goal height | h_goal | Check game manual | Game manual |
+| Field length | - | 3.6m (144") | Game manual |
+| Turret gear ratio | G | 3:1 to 10:1 | Count teeth |
+| Encoder ticks/rev | - | 2048 (Falcon) | Motor spec |
+
+### Motor Specifications (From Specs)
+
+| Variable | Typical Value | Where to Find |
+|----------|---------------|---------------|
+| Falcon 500 max RPM | 6000 | REV Robotics spec |
+| Falcon 500 ticks/rev | 2048 | REV Robotics spec |
+| Kraken max RPM | 6000 | REV Robotics spec |
+| GoBILDA电机 RPM | Check spec | goBILDA website |
+
+### Tuning Values (Find Through Testing)
+
+| Variable | Starting Value | How to Tune |
+|----------|---------------|-------------|
+| K_P (flywheel) | 0.001-0.01 | Increase until oscillation, back off 20% |
+| K_I (flywheel) | 0.0-0.001 | Add if steady-state error exists |
+| K_D (flywheel) | 0.0-0.001 | Add if overshooting |
+| K_F (flywheel) | 12V / max_rpm | From characterization |
+| K_S (flywheel) | 0.01-0.1 | Trial and error |
+| K_P (turret) | 0.05 | Increase until smooth |
+| K_D (turret) | 0.5 | Increase to reduce overshoot |
+| Intake speed ratio | S | Test until intaking reliably |
+
+### Calculated Values (From Formula)
+
+These you DON'T need to measure - calculate from other values:
+
+| Variable | Formula |
+|----------|---------|
+| v_min | √(g × (Δy + √(Δy² + Δx²))) |
+| ω (angular velocity) | (RPM × 2π) / 60 |
+| v (linear velocity) | ω × r |
+| I (moment of inertia) | ½ × m × r² |
+| θ (turret angle) | atan2(y_goal - y_robot, x_goal - x_robot) |
+| distance | √((x₂-x₁)² + (y₂-y₁)²) |
+| degrees_per_tick | (1/ticks) × gear_ratio × 360 |
+
+### Odometry Values (Measure + Calculate)
+
+| Variable | How to Find |
+|----------|-------------|
+| Wheel circumference | π × diameter (measure) |
+| Ticks per inch | ticks_per_rev / (circumference / 25.4) |
+| X position | Integrate velocity × cos(heading) × dt |
+| Y position | Integrate velocity × sin(heading) × dt |
+| Heading | From IMU/gyro |
+
+### What You NEED To Measure:
+
+1. **Flywheel wheel diameter** → Calculate radius
+2. **Flywheel weight** → For inertia calculation
+3. **Intake roller diameter** → Calculate radius  
+4. **Drive wheel diameter** → For odometry
+5. **Robot launcher height** → Measure from ground
+6. **Goal height** → Check game manual
+7. **Turret gear ratio** → Count teeth or measure
+8. **Motor encoder ticks** → From motor spec
+
+### What You NEED To Tune (Trial & Error):
+
+1. **All PID gains** - K_P, K_I, K_D, K_F
+2. **Intake speed ratio** - S value
+3. **Shooting RPM** - For different distances
+4. **Hood angles** - For different distances
+
+### What You DON'T Need To Measure (Calculate):
+
+- All trajectory equations
+- Angular/linear velocity conversions
+- Turret angle from coordinates
+- Distance between points
