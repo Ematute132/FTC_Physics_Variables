@@ -316,3 +316,34 @@ y += (v_left + v_right) / 2 × sin(θ) × dt
 - Game Manual - Field dimensions, goal heights
 - WPILib - PID tuning procedures
 - FTC Forum - Team testing procedures
+
+---
+
+## Additional Tips from FTC Teams (Discord)
+
+### Limelight + Pedro Pathing Integration
+
+**Source:** FTC Discord chat with Team TSFD
+
+**Key Advice:**
+
+1. **Get field position from Limelight** → Convert to Pedro Pathing coordinates → Apply offset from center
+   - Convert Limelight's field position to Pedro coordinate system
+   - Apply offset from field center for accurate positioning
+
+2. **Refresh Rate Strategy:**
+   - Don't update every frame - only at start of match
+   - Then again only after getting "slammed" or significant collision
+   - Updates are expensive computationally
+
+3. **Relocalization Strategy:**
+   - Compensate for distance error from everything
+   - OR use "relocalization mode"
+   - **Recommended:** Relocalize only when turret is at center position
+   - Slam into corner and click button to reset
+
+4. **Turret Setup:**
+   - Keep turret at center position for relocalization
+   - Makes alignment consistent and easy
+
+**Quote:** "you just get field position from ll and convert it to pedro type cords and then offset from center" - dot (FTC Team TSFD)
